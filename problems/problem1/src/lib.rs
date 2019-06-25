@@ -1,9 +1,33 @@
+use std::cmp::max;
+
+pub fn find_largest_element1(elems: &Vec<i64>) -> Option<i64> {
+
+    let mut largest: Option<i64> = None;
+
+    for e in elems {
+        match largest {
+            Some(n) => largest = Some(max(n, *e)),
+            None    => largest = Some(*e),
+        }
+    }
+
+    largest
+}
+
 pub fn find_largest_element(elems: &Vec<i64>) -> Option<i64> {
 
-    // this will compile (with warnings), but some tests will fail.
-    // replace the code below with your own solution!
-    None
+    let first = elems.first()?;
 
+    Some(find_largest_with_default(elems, * first))
+}
+
+fn find_largest_with_default(elems: &Vec<i64>, default: i64) -> i64 {
+    let mut largest = default;
+    for e in elems {
+        largest = max(*e, largest);
+
+    }
+    largest
 }
 
 #[cfg(test)]
