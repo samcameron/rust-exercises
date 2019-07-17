@@ -58,7 +58,6 @@ pub fn format_line(s: &str, max_length: usize) -> String {
 
     // Add spaces to equal the longest
     for _ in s.len()..max_length + 1 {
-    //for _ in 0..max_length {
         line.push_str(" ");
     }
 
