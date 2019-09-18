@@ -4,44 +4,51 @@ type Set = Box<dyn Fn(i64) -> bool>;
 
 // create a new set from one `i64`
 pub fn singleton(x: i64) -> Set {
-    Box::new(move |y| y == 1)
+    Box::new(move |y| y == x)
 }
 
 // tests for membership in the given set
 pub fn contains(s: &Set, x: i64) -> bool {
-    x == 1
+    s(x)
 }
 
 // combines two sets
 pub fn union(s1: Set, s2: Set) -> Set {
-    Box::new(move |x| x == 1)
+   // Box::new(move |x| x == 1)
+    Box::new(move |x| s1(x) || s2(x))
 }
 
 // creates a new set containing only elements from `s1` and `s2`
 pub fn intersect(s1: Set, s2: Set) -> Set {
-    Box::new(move |x| x == 1)
+    Box::new(move |x| s1(x) && s2(x))
 }
 
 // creates a new set containing elements from `s1` that aren't part of `s2`
 pub fn diff(s1: Set, s2: Set) -> Set {
-    Box::new(move |x| x == 1)
+    Box::new(move |x| s1(x) && !s2(x))
 }
 
 // filters out any elements in the set that don't match the predicate `p`
 pub fn filter(s: Set, p: fn(i64) -> bool) -> Set {
-    Box::new(move |x| x == 1)
+    Box::new(move |x| p(x) && s(x))
 }
 
 // checks if predicate `p` holds true for elements in the set. you can
 // limit the search space to the range `(-1000..1000)`
 pub fn forall(s: Set, p: Box<dyn Fn(i64) -> bool>) -> bool {
+    for x in -1000..1000 {
+        if s(x) && !p(x) {
+            return false
+        }
+    }
     true
 }
 
 // tests if any element of the set exists such that predicate `p` holds
 // true. this should be implemented to use `forall`
 pub fn exists(s: Set, p: Box<dyn Fn(i64) -> bool>) -> bool {
-    true
+    let not_p = Box::new(move |x| !p(x));
+    !forall(s, not_p)
 }
 
 // we want to implement `map` using `exists`, but it rqeuires nested closures, which
